@@ -93,7 +93,7 @@ def render_project_dashboard(
     # wird exakt per XNPV berechnet - Interpolation zwischen Kurvenpunkten
     # ist nicht noetig. Die Einstellung gilt app-weit (Session-State), damit
     # Projekte zum selben Satz verglichen werden.
-    st.session_state.setdefault("npv_diskontsatz_pct", 5.0)
+    st.session_state.setdefault("npv_diskontsatz_pct", 8.0)
     col_rate, _ = st.columns([1.3, 5])
     npv_satz_pct = col_rate.number_input(
         "NPV-Diskontsatz (%)",

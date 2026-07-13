@@ -202,7 +202,7 @@ def cashflow_to_excel(result: ValuationResult) -> bytes:
     kpi_df = pd.DataFrame(
         [
             ("EK-Rendite (IRR)", kpis.equity_irr),
-            ("NPV bei 5 %", kpis.npv_eur),
+            ("NPV bei 8 %", kpis.npv_eur),
             ("Payback (Jahre)", kpis.payback_jahre),
             ("Investitionsvolumen (€)", kpis.capex_total_eur),
             ("Eigenkapitaleinsatz (€)", kpis.eigenkapital_eur),

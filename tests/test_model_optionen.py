@@ -137,9 +137,9 @@ class TestNegativeStundenModus:
 
 
 class TestNpvAt:
-    def test_npv_at_5_prozent_entspricht_kpi(self, project, global_assumptions):
+    def test_npv_at_standardsatz_entspricht_kpi(self, project, global_assumptions):
         result = run_valuation(project, global_assumptions)
-        assert npv_at(result.cashflow, 0.05) == pytest.approx(result.kpis.npv_eur)
+        assert npv_at(result.cashflow, 0.08) == pytest.approx(result.kpis.npv_eur)
 
     def test_npv_at_liegt_auf_der_npv_kurve(self, project, global_assumptions):
         result = run_valuation(project, global_assumptions)

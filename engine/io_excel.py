@@ -38,7 +38,7 @@ EINSTELLUNGEN_DEFAULTS = {
     "gemeindeabgabe_eur_mwh_vorschlag": 2.0,
     "direktvermarktungskosten_eur_mwh_vorschlag": 1.0,
     "negative_stunden_gewichtung_pct": 100.0,
-    "negative_stunden_modus": "abregelung",
+    "negative_stunden_modus": "marktwert",
     "degradation_pct_pa": 0.25,
     "sicherheitsabschlag_pct": 0.0,
     "eag_foerderdauer_jahre": 20,

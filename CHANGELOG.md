@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.2.0 – Neue Standards und Branding
+
+- **Negativstunden-Modus**: „Rückfall auf Jahresmarktwert" ist jetzt der
+  Standard und steht in der Auswahl an erster Stelle; „Abregelung"
+  bleibt als Option erhalten. Die Engine-Einheitstests rechnen weiterhin
+  explizit mit Abregelung (härteste Annahme, handgerechnete Werte).
+- **Standard-Diskontsatz 8 %**: gilt konsistent für die NPV-KPI-Kachel
+  (Voreinstellung des Eingabefelds), die KPI-Berechnung der Engine, die
+  Portfoliotabelle („NPV bei 8 %") und den Excel-Export.
+- **Logo/Favicon**: neues Trianel-Logo im Kopfbereich; für den
+  Browser-Tab wird eine automatisch beschnittene, quadratische
+  Logovariante erzeugt (assets/favicon.png), damit das Logo im Tab
+  nicht in Leerfläche verschwindet.
+- `st.components.v1.html` durch `st.iframe` ersetzt (Streamlit-
+  Deprecation ab 06/2026); ausgelieferte global_assumptions.yaml
+  enthält die neuen Felder jetzt explizit.
+
 ## 2.1.0 – Konfigurierbare Modelloptionen, KPI-Auto-Fit, NPV-Diskontsatz
 
 Validiert gegen das Referenz-Excel „Tool_TEA_Buchkirchen.xlsm" (Blatt

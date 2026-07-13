@@ -22,7 +22,6 @@ import html
 import json
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 #: Maximale (= bisherige) Schriftgroesse der KPI-Werte in rem.
 KPI_MAX_FONT_REM = 2.0
@@ -96,12 +95,12 @@ def render_kpi_row(items: list[tuple[str, str]], group: str) -> None:
     st.markdown(
         f'<div class="kpi-row">{kacheln}</div>', unsafe_allow_html=True
     )
-    components.html(
+    st.iframe(
         _FIT_SCRIPT
         % {
             "group": json.dumps(group),
             "max_rem": KPI_MAX_FONT_REM,
             "min_rem": KPI_MIN_FONT_REM,
         },
-        height=0,
+        height=1,
     )

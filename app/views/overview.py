@@ -69,7 +69,7 @@ def render_overview() -> None:
                     "EK-Rendite (%)": round(z["kpis"].equity_irr * 100, 2)
                     if z["kpis"].equity_irr is not None
                     else None,
-                    "NPV bei 5 % (€)": round(z["kpis"].npv_eur),
+                    "NPV bei 8 % (€)": round(z["kpis"].npv_eur),
                     "Invest (€)": round(z["kpis"].capex_total_eur),
                     "Invest (€/kWp)": round(
                         z["kpis"].capex_total_eur / z["projekt"].nennleistung_kwp

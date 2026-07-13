@@ -54,7 +54,7 @@ def _xirr(cashflows: list[float], dates: list[date]) -> float | None:
 
 
 def calculate_kpis(
-    cashflow: CashflowTimeseries, diskontsatz_pct: float = 0.05
+    cashflow: CashflowTimeseries, diskontsatz_pct: float = 0.08
 ) -> KPIs:
     df = cashflow.data
     cashflows = df["cf_gesamt_eur"].tolist()

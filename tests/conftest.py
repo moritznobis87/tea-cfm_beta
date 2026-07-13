@@ -23,6 +23,7 @@ from engine import (  # noqa: E402
     CapexBreakdown,
     GlobalAssumptions,
     MarktpreisSzenario,
+    NegativeStundenModus,
     OpexItem,
     PVProject,
     TaxModus,
@@ -55,6 +56,10 @@ def global_assumptions(szenario_flach: MarktpreisSzenario) -> GlobalAssumptions:
         gemeindeabgabe_eur_kwh=0.002,
         direktvermarktungskosten_eur_kwh=0.001,
         negative_stunden_gewichtung_pct=1.0,
+        # Explizit Abregelung: Die Einheitstests rechnen mit dem
+        # vollstaendigen Verguetungsausfall (haerteste Annahme);
+        # der App-Default ist seit 2.2 MARKTWERT.
+        negative_stunden_modus=NegativeStundenModus.ABREGELUNG,
         degradation_pct_pa=0.0,
         sicherheitsabschlag_pct=0.0,
         eag_foerderdauer_jahre=20,

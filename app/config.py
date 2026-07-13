@@ -19,6 +19,8 @@ GLOBAL_ASSUMPTIONS_PATH = DATA_DIR / "global_assumptions.yaml"
 
 ASSETS_DIR = ROOT_DIR / "assets"
 LOGO_PATH = ASSETS_DIR / "TRI_Logo_Pure_RGB_Red.png"
+#: Beschnittene, quadratische Logovariante fuer den Browser-Tab.
+FAVICON_PATH = ASSETS_DIR / "favicon.png"
 
 APP_TITLE = "TEA PV-Projektbewertung"
 

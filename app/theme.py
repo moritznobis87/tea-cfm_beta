@@ -127,9 +127,11 @@ _CSS = f"""
         white-space: nowrap;
         overflow: hidden;
     }}
-    /* Unsichtbare 0-Hoehe-iframes (Schriftgroessen-Skript) samt Container
-       aus dem Layoutfluss nehmen, damit kein Leerraum entsteht. */
-    div[data-testid="stElementContainer"]:has(> iframe[height="0"]) {{
+    /* 1px-iframes (Schriftgroessen-Skript, siehe app/components/kpi.py)
+       samt Container aus dem Layoutfluss nehmen, damit kein Leerraum
+       entsteht. Skripte in display:none-iframes laufen weiterhin. */
+    div[data-testid="stElementContainer"]:has(iframe[height="0"]),
+    div[data-testid="stElementContainer"]:has(iframe[height="1"]) {{
         display: none;
     }}
 

@@ -44,8 +44,8 @@ class NegativeStundenModus(str, Enum):
     weiterhin verguetet.
     """
 
-    ABREGELUNG = "abregelung"
     MARKTWERT = "marktwert"
+    ABREGELUNG = "abregelung"
 
 
 class TaxModus(str, Enum):
@@ -198,7 +198,7 @@ class GlobalAssumptions(BaseModel):
     # Dient zum "Einblenden" des Effekts, z.B. fuer Sensitivitaets- oder
     # Vergleichsrechnungen ohne diesen Abschlag.
     negative_stunden_gewichtung_pct: float = Field(ge=0, le=1, default=1.0)
-    negative_stunden_modus: NegativeStundenModus = NegativeStundenModus.ABREGELUNG
+    negative_stunden_modus: NegativeStundenModus = NegativeStundenModus.MARKTWERT
 
     # Technische Standardannahmen
     degradation_pct_pa: float = 0.0

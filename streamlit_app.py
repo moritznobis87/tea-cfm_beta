@@ -11,13 +11,13 @@ from __future__ import annotations
 
 import streamlit as st
 
-from app.config import APP_TITLE, LOGO_PATH
+from app.config import APP_TITLE, FAVICON_PATH, LOGO_PATH
 from app.theme import apply_theme
 
 st.set_page_config(
     page_title=APP_TITLE,
     layout="wide",
-    page_icon=str(LOGO_PATH) if LOGO_PATH.exists() else "☀️",
+    page_icon=str(FAVICON_PATH) if FAVICON_PATH.exists() else "☀️",
 )
 apply_theme()
 
