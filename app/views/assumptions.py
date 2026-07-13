@@ -13,7 +13,13 @@ import pandas as pd
 import streamlit as st
 
 from app import services
-from engine import MarktpreisSzenario, OpexItem, TaxModus, TilgungsArt
+from engine import (
+    MarktpreisSzenario,
+    NegativeStundenModus,
+    OpexItem,
+    TaxModus,
+    TilgungsArt,
+)
 
 
 def render_assumptions() -> None:
@@ -65,6 +71,30 @@ def render_assumptions() -> None:
         negative_stunden_gewichtung = st.slider(
             "Gewichtung (%)", min_value=0, max_value=100,
             value=int(round(ga.negative_stunden_gewichtung_pct * 100)), step=5,
+        )
+
+        st.markdown("**Verhalten in Stunden negativer Preise**")
+        neg_modus_labels = {
+            NegativeStundenModus.ABREGELUNG.value: (
+                "Erlöse entfallen vollständig – Anlage wird abgeregelt"
+            ),
+            NegativeStundenModus.MARKTWERT.value: (
+                "Rückfall auf Jahresmarktwert – keine Marktprämie, "
+                "Anlage speist weiter ein"
+            ),
+        }
+        neg_modus_optionen = [m.value for m in NegativeStundenModus]
+        negative_stunden_modus = st.radio(
+            "Negativstunden-Modus",
+            neg_modus_optionen,
+            format_func=lambda v: neg_modus_labels[v],
+            index=neg_modus_optionen.index(ga.negative_stunden_modus.value),
+            label_visibility="collapsed",
+            help="Abregelung: Für den Anteil negativer Stunden entfallen die "
+                 "Erlöse komplett. Rückfall auf Jahresmarktwert: Die Anlage "
+                 "speist weiter ein und erhält den Marktwert, nur die "
+                 "Marktprämie entfällt. Nach der Förderdauer wirkt der "
+                 "Unterschied nur noch im Abregelungs-Modus.",
         )
 
         edited_szenarien: dict[str, pd.DataFrame] = {}
@@ -185,6 +215,15 @@ def render_assumptions() -> None:
             "Tilgungsart", [art.value for art in TilgungsArt],
             index=0 if ga.tilgungsart == TilgungsArt.ANNUITAET else 1,
         )
+        tilgungsfreies_anlaufjahr = st.toggle(
+            "Tilgungsfreies Anlaufjahr",
+            value=ga.tilgungsfreies_anlaufjahr,
+            help="Im ersten Betriebsjahr werden nur Zinsen gezahlt, die "
+                 "Tilgung beginnt in Jahr 2. Die Anzahl der Tilgungsraten "
+                 "bleibt gleich (der Schuldendienst verlängert sich um ein "
+                 "Jahr); dadurch fällt auch im zweiten Jahr der Zins noch "
+                 "auf die volle Kreditsumme an.",
+        )
 
     # --- Steuern ---------------------------------------------------------------
     with st.expander("Steuern", expanded=False):
@@ -266,6 +305,7 @@ def render_assumptions() -> None:
         ga.marktpreis_inflation_pct_pa = marktpreis_inflation / 100
         ga.marktpreis_inflation_basisjahr = int(marktpreis_basisjahr)
         ga.negative_stunden_gewichtung_pct = negative_stunden_gewichtung / 100
+        ga.negative_stunden_modus = NegativeStundenModus(negative_stunden_modus)
 
         ga.opex_standard = [
             OpexItem(
@@ -284,6 +324,7 @@ def render_assumptions() -> None:
         ga.sicherheitsabschlag_pct = sicherheitsabschlag / 100
         ga.steuersatz_pct = steuersatz / 100
         ga.tilgungsart = TilgungsArt(tilgungsart)
+        ga.tilgungsfreies_anlaufjahr = tilgungsfreies_anlaufjahr
         ga.gemeindeabgabe_eur_kwh = gemeindeabgabe / 1000
         ga.direktvermarktungskosten_eur_kwh = direktvermarktungskosten / 1000
         ga.tax_modus = TaxModus(tax_modus)

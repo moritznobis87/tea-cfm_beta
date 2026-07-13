@@ -33,6 +33,21 @@ class TilgungsArt(str, Enum):
     LINEAR = "linear"
 
 
+class NegativeStundenModus(str, Enum):
+    """Verhalten der Anlage in Stunden negativer Strompreise (in denen die
+    Marktpraemie gesetzlich entfaellt).
+
+    ABREGELUNG: Die Anlage wird abgeregelt - fuer den Anteil negativer
+    Stunden entfallen die Erloese vollstaendig.
+    MARKTWERT:  Die Anlage speist weiter ein - fuer den Anteil negativer
+    Stunden entfaellt nur die Marktpraemie, der Jahresmarktwert wird
+    weiterhin verguetet.
+    """
+
+    ABREGELUNG = "abregelung"
+    MARKTWERT = "marktwert"
+
+
 class TaxModus(str, Enum):
     PAUSCHAL_AUF_EBT = "pauschal_auf_ebt"
     AFA_KOERPERSCHAFTSTEUER = "afa_koerperschaftsteuer"
@@ -183,6 +198,7 @@ class GlobalAssumptions(BaseModel):
     # Dient zum "Einblenden" des Effekts, z.B. fuer Sensitivitaets- oder
     # Vergleichsrechnungen ohne diesen Abschlag.
     negative_stunden_gewichtung_pct: float = Field(ge=0, le=1, default=1.0)
+    negative_stunden_modus: NegativeStundenModus = NegativeStundenModus.ABREGELUNG
 
     # Technische Standardannahmen
     degradation_pct_pa: float = 0.0
@@ -195,6 +211,9 @@ class GlobalAssumptions(BaseModel):
     # Finanzierung
     kreditlaufzeit_jahre: int = Field(gt=0, default=20)
     tilgungsart: TilgungsArt = TilgungsArt.ANNUITAET
+    #: Jahr 1 nur Zinsen, Tilgung ab Jahr 2 (verlaengert den
+    #: Schuldendienst um ein Jahr, Anzahl der Tilgungsraten bleibt gleich).
+    tilgungsfreies_anlaufjahr: bool = False
 
     # Steuer
     tax_modus: TaxModus = TaxModus.AFA_KOERPERSCHAFTSTEUER
@@ -257,12 +276,14 @@ class EffectiveAssumptions(BaseModel):
     gemeindeabgabe_eur_kwh: float
     direktvermarktungskosten_eur_kwh: float
     negative_stunden_gewichtung_pct: float
+    negative_stunden_modus: NegativeStundenModus
 
     capex_total_eur: float
     eigenkapitalquote_pct: float
     fremdkapitalzins_pct: float
     kreditlaufzeit_jahre: int
     tilgungsart: TilgungsArt
+    tilgungsfreies_anlaufjahr: bool
 
     tax_modus: TaxModus
     steuersatz_pct: float

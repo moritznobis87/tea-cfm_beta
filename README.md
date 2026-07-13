@@ -42,6 +42,10 @@ make run       # App starten
   Marktwert-Kurven (der EAG-Zuschlag bleibt gesetzlich nominal fix);
   Annuitäten-/lineare Tilgung; KöSt mit AfA, Freibetrag und
   Verlustvortrag inkl. 75-%-Verrechnungsgrenze (§8 Abs. 4 Z 2 KStG).
+- **Modelloptionen**: Verhalten in Stunden negativer Preise umschaltbar
+  (Abregelung vs. Rückfall auf Jahresmarktwert), tilgungsfreies
+  Anlaufjahr (On/Off), NPV-Diskontsatz der KPI-Kachel frei wählbar
+  (0–10 %, exakte XNPV-Berechnung).
 - **Geschäftsregel**: Konventionelle Anlagen erhalten automatisch einen
   Abschlag von 25 % auf den EAG-Zuschlagswert gegenüber Agri-PV
   (`KONVENTIONELL_ZUSCHLAG_ABSCHLAG_PCT` in `engine/models.py`).

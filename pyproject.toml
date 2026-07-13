@@ -1,6 +1,6 @@
 [project]
 name = "tea-pv-platform"
-version = "2.0.0"
+version = "2.1.0"
 description = "TEA PV-Projektbewertung – Wirtschaftlichkeitsrechnung für PV-Projekte nach dem österreichischen EAG-Marktprämienmodell"
 readme = "README.md"
 requires-python = ">=3.11"

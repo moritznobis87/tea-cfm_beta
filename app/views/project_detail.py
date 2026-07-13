@@ -11,10 +11,12 @@ import streamlit as st
 
 from app import services
 from app.components import charts
+from app.components.kpi import render_kpi_row
 from app.components.project_form import render_project_form
 from app.config import MONATE_KURZ, STATE_DELETE_CANDIDATE, STATE_SELECTED_PROJECT
-from app.formatting import fmt_ct_kwh, fmt_dscr, fmt_eur, fmt_kwp, fmt_pct
-from engine import AnlagenTyp, GlobalAssumptions, PVProject
+from app.formatting import fmt_ct_kwh, fmt_dscr, fmt_eur, fmt_kwp, fmt_number, fmt_pct
+from engine import AnlagenTyp, GlobalAssumptions, NegativeStundenModus, PVProject
+from engine.kpis import npv_at
 
 _XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
@@ -87,12 +89,34 @@ def render_project_dashboard(
             st.rerun()
 
     # --- KPI-Leiste ----------------------------------------------------------
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("EK-Rendite (IRR)", fmt_pct(kpis.equity_irr))
-    col2.metric("NPV bei 5 %", fmt_eur(kpis.npv_eur))
-    col3.metric("Min. DSCR (Kreditlaufzeit)", fmt_dscr(kpis.dscr_min))
-    col4.metric("Investitionsvolumen", fmt_eur(kpis.capex_total_eur))
-    col5.metric("Eigenkapitaleinsatz", fmt_eur(kpis.eigenkapital_eur))
+    # NPV-Diskontsatz frei waehlbar (gilt fuer die NPV-Kachel). Der Wert
+    # wird exakt per XNPV berechnet - Interpolation zwischen Kurvenpunkten
+    # ist nicht noetig. Die Einstellung gilt app-weit (Session-State), damit
+    # Projekte zum selben Satz verglichen werden.
+    st.session_state.setdefault("npv_diskontsatz_pct", 5.0)
+    col_rate, _ = st.columns([1.3, 5])
+    npv_satz_pct = col_rate.number_input(
+        "NPV-Diskontsatz (%)",
+        min_value=0.0,
+        max_value=10.0,
+        step=0.25,
+        key="npv_diskontsatz_pct",
+        help="Diskontsatz für die NPV-Kachel (0–10 %). Der Wert wird exakt "
+             "aus der Cashflow-Zeitreihe berechnet (XNPV), auch zwischen den "
+             "Stützstellen der NPV-Kurve.",
+    )
+    npv_wert = npv_at(result.cashflow, npv_satz_pct / 100)
+
+    render_kpi_row(
+        [
+            ("EK-Rendite (IRR)", fmt_pct(kpis.equity_irr)),
+            (f"NPV bei {fmt_number(npv_satz_pct, 2)} %", fmt_eur(npv_wert)),
+            ("Min. DSCR (Kreditlaufzeit)", fmt_dscr(kpis.dscr_min)),
+            ("Investitionsvolumen", fmt_eur(kpis.capex_total_eur)),
+            ("Eigenkapitaleinsatz", fmt_eur(kpis.eigenkapital_eur)),
+        ],
+        group="projekt",
+    )
 
     if kpis.dscr_min is not None and kpis.dscr_min < 1.0:
         st.warning(
@@ -284,7 +308,13 @@ def _render_assumptions_tab(result) -> None:
             f"- Förderdauer: {ea.eag_foerderdauer_jahre} Jahre\n"
             f"- Inflation Marktwerte: {fmt_pct(ea.marktpreis_inflation_pct_pa)} p.a. "
             f"ab {ea.marktpreis_inflation_basisjahr}\n"
-            f"- Gewichtung neg. Stunden: {fmt_pct(ea.negative_stunden_gewichtung_pct, 0)}"
+            f"- Gewichtung neg. Stunden: {fmt_pct(ea.negative_stunden_gewichtung_pct, 0)}\n"
+            f"- Negativstunden-Modus: "
+            + (
+                "Abregelung (Erlöse entfallen)"
+                if ea.negative_stunden_modus == NegativeStundenModus.ABREGELUNG
+                else "Rückfall auf Jahresmarktwert"
+            )
         )
     with col_c:
         st.markdown("**Finanzierung & Steuer**")
@@ -293,6 +323,8 @@ def _render_assumptions_tab(result) -> None:
             f"- FK-Zins: {fmt_pct(ea.fremdkapitalzins_pct)}\n"
             f"- Kreditlaufzeit: {ea.kreditlaufzeit_jahre} Jahre "
             f"({ea.tilgungsart.value})\n"
+            f"- Tilgungsfreies Anlaufjahr: "
+            f"{'Ja' if ea.tilgungsfreies_anlaufjahr else 'Nein'}\n"
             f"- Steuermodus: {ea.tax_modus.value}\n"
             f"- Steuersatz: {fmt_pct(ea.steuersatz_pct, 0)}"
         )

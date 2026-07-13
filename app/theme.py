@@ -96,6 +96,43 @@ _CSS = f"""
     }}
     div[data-testid="stMetric"] label {{ color: {Colors.MUTED}; }}
 
+    .kpi-row {{
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        gap: 12px;
+        margin: 0.35rem 0 0.9rem 0;
+    }}
+    .kpi-card {{
+        background: {Colors.WASH};
+        border: 1px solid {Colors.LINE};
+        border-left: 3px solid {Colors.BRAND};
+        border-radius: 10px;
+        padding: 13px 16px 11px 16px;
+        min-width: 0;               /* erlaubt Schrumpfen in der Grid-Zelle */
+    }}
+    .kpi-card .kpi-label {{
+        color: {Colors.MUTED};
+        font-size: 0.86rem;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }}
+    .kpi-card .kpi-value {{
+        color: {Colors.INK};
+        font-weight: 650;
+        font-size: 2rem;            /* Maximum; JS passt gruppenweise an */
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+    }}
+    /* Unsichtbare 0-Hoehe-iframes (Schriftgroessen-Skript) samt Container
+       aus dem Layoutfluss nehmen, damit kein Leerraum entsteht. */
+    div[data-testid="stElementContainer"]:has(> iframe[height="0"]) {{
+        display: none;
+    }}
+
     /* --- Projektkarten -------------------------------------------------- */
     .project-card {{
         border: 1px solid {Colors.LINE};

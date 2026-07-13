@@ -73,11 +73,13 @@ def resolve_assumptions(
         gemeindeabgabe_eur_kwh=project.gemeindeabgabe_eur_mwh / 1000,
         direktvermarktungskosten_eur_kwh=project.direktvermarktungskosten_eur_mwh / 1000,
         negative_stunden_gewichtung_pct=global_assumptions.negative_stunden_gewichtung_pct,
+        negative_stunden_modus=global_assumptions.negative_stunden_modus,
         capex_total_eur=project.capex.summe_eur,
         eigenkapitalquote_pct=project.eigenkapitalquote_pct,
         fremdkapitalzins_pct=project.fremdkapitalzins_pct,
         kreditlaufzeit_jahre=global_assumptions.kreditlaufzeit_jahre,
         tilgungsart=global_assumptions.tilgungsart,
+        tilgungsfreies_anlaufjahr=global_assumptions.tilgungsfreies_anlaufjahr,
         tax_modus=global_assumptions.tax_modus,
         steuersatz_pct=global_assumptions.steuersatz_pct,
         afa_nutzungsdauer_jahre=global_assumptions.afa_nutzungsdauer_jahre,
@@ -126,6 +128,7 @@ def run_valuation(
         assumptions.fremdkapitalzins_pct,
         assumptions.kreditlaufzeit_jahre,
         assumptions.tilgungsart,
+        assumptions.tilgungsfreies_anlaufjahr,
     )
     tax = calculate_tax(
         revenue,

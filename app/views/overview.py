@@ -10,6 +10,7 @@ import pandas as pd
 import streamlit as st
 
 from app import services
+from app.components.kpi import render_kpi_row
 from app.config import STATE_SELECTED_PROJECT
 from app.formatting import fmt_eur, fmt_kwp, fmt_number, fmt_pct
 from app.views.project_detail import render_project_dashboard
@@ -45,11 +46,15 @@ def render_overview() -> None:
     irr_werte = [z["kpis"].equity_irr for z in zeilen if z["kpis"].equity_irr is not None]
     mittlere_irr = sum(irr_werte) / len(irr_werte) if irr_werte else None
 
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Projekte", f"{len(zeilen)}")
-    col2.metric("Portfolio-Leistung", f"{fmt_number(gesamt_kwp / 1000, 1)} MWp")
-    col3.metric("Investitionsvolumen gesamt", fmt_eur(gesamt_capex))
-    col4.metric("Ø EK-Rendite", fmt_pct(mittlere_irr))
+    render_kpi_row(
+        [
+            ("Projekte", f"{len(zeilen)}"),
+            ("Portfolio-Leistung", f"{fmt_number(gesamt_kwp / 1000, 1)} MWp"),
+            ("Investitionsvolumen gesamt", fmt_eur(gesamt_capex)),
+            ("Ø EK-Rendite", fmt_pct(mittlere_irr)),
+        ],
+        group="portfolio",
+    )
 
     # --- Vergleichstabelle ---------------------------------------------------
     with st.expander("Projektvergleich (Tabelle)", expanded=False):

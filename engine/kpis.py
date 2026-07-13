@@ -85,6 +85,19 @@ def calculate_kpis(
     )
 
 
+def npv_at(cashflow: CashflowTimeseries, diskontsatz_pct: float) -> float:
+    """Exakter NPV (XNPV, Act/365) fuer einen beliebigen Diskontsatz.
+
+    Fuer die UI-Einstellung "NPV bei x %": kein Interpolieren zwischen
+    Kurvenpunkten noetig - der Wert wird direkt aus der Cashflow-Zeitreihe
+    berechnet (identische Formel wie fuer die NPV-Kurve).
+    """
+    df = cashflow.data
+    return float(
+        _xnpv(diskontsatz_pct, df["cf_gesamt_eur"].tolist(), df["datum"].tolist())
+    )
+
+
 def calculate_npv_curve(
     cashflow: CashflowTimeseries, diskontsaetze_pct: list[float] | None = None
 ) -> pd.DataFrame:
